@@ -203,21 +203,22 @@ function downvoteComments(url, request){
 
 function updateComments(url, request){
   const id = Number(url.split('/').filter(segment => segment)[1]);
-  const savedComments = database.comments[id];
+  const savedComment = database.updatedComments[id];
+  console.log(savedComment);
   const requestComments = request.body && request.body.comment;
   const response ={};
 
-  if (!id || requestComments) {
+  if (!id || !requestComments) {
     response.status = 400;
   }
-  else if (!savedComments) {
+  else if (!savedComment) {
     response.status = 404;
   }
   else {
-    savedComments.title =requestComments.title || savedComments.title;
-    savedComments.url = requestComments.url || savedComments.url;
+    savedComment.title = requestComments.title || savedComment.title;
+    savedComment.url = requestComments.url || savedComment.url;
 
-    response.body = {comment: comments}
+    response.body = {comment: savedComment}
     response.status = 200;
   }
 
