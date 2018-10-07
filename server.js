@@ -203,8 +203,7 @@ function downvoteComments(url, request){
 
 function updateComments(url, request){
   const id = Number(url.split('/').filter(segment => segment)[1]);
-  const savedComment = database.updatedComments[id];
-  console.log(savedComment);
+  const savedComment = database.comments[id];
   const requestComments = request.body && request.body.comment;
   const response ={};
 
@@ -218,7 +217,7 @@ function updateComments(url, request){
     savedComment.title = requestComments.title || savedComment.title;
     savedComment.url = requestComments.url || savedComment.url;
 
-    response.body = {comment: savedComment}
+    response.body = {comment: requestComments || savedComment}
     response.status = 200;
   }
 
