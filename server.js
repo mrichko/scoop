@@ -16,19 +16,39 @@ const routes = {
   '/users/:username': {
     'GET': getUser
   },
+
   '/comments': {
-    'GET': getArticles,
+    'GET': getComments,
+    'POST': createComments
+  },
+
+  '/comments/:id': {
+    'GET': getComments,
+    'PUT': updateComments,
+    'DELETE': deleteComments
+},
+
+  '/comments/:id/upvote': {
+    'PUT': upvoteComments
+  },
+
+  '/comments/:id/downvote': {
+    'PUT': downvoteComments
+ },
+
+  '/articles': {
+    'GET': getArticle,
     'POST': createArticle
   },
-  '/comments/:id': { //adjusted route from articles to comments/
+  '/articles/:id': {
     'GET': getArticle,
     'PUT': updateArticle,
     'DELETE': deleteArticle
   },
-  '/comments/:id/upvote': { //adjusted route from articles to comments/
+  '/articles/:id/upvote': {
     'PUT': upvoteArticle
   },
-  '/comments/:id/downvote': { //adjusted route from articles to comments/
+  '/articles/:id/downvote': {
     'PUT': downvoteArticle
   }
 };
@@ -81,7 +101,7 @@ function getOrCreateUser(url, request) {
   }
 
   return response;
-}
+};
 
 function getArticles(url, request) {
   const response = {};
@@ -143,26 +163,26 @@ function createArticle(url, request) {
   }
 
   return response;
-}
+};
 
 function createComments(url,request){
-  const requestComments = request.body && request.body.comments;
+  const requestComments = request.body && request.body.comment;
   const response = {};
-
-  if(requestComments && requestComments.body && requestComments.articleID
-    && database.users[requestComments.username]& database.articles[requestComments.articleId]){
+  if(requestComments && requestComments.body && database.users[requestComments.username]
+    && database.articles[requestComments.articleId]){
       const comments = {
         id: database.nextCommentsId++,
-        title: requestComments.title,
+        body: requestComments.body,
         url: requestComments.url,
         username: requestComments.username,
-        commentsIds: [],
         upvotedBy: [],
-        downvotedBy: []
+        downvotedBy: [],
+        articleId: requestComments.articleId
       };
 
-      database.comments[comments.id] = comment;
-      database.users[comments.username].commentsIds.push(comments.id);
+      database.comments[comments.id] = comments;
+      database.users[comments.username].commentIds.push(comments.id);
+      database.articles[comments.articleId].commentIds.push(comments.id);
 
       response.body = {comments: comments};
       response.status = 201;
@@ -170,8 +190,27 @@ function createComments(url,request){
     else {
       response.status = 400;
     }
-},
+};
 
+function getComments(url,request){
+
+};
+
+function upvoteComments(url, request){
+
+};
+
+function downvoteComments(url, request){
+
+};
+
+function updateComments(url, request){
+
+};
+
+function deleteComments(url, request){
+
+};
 
 function updateArticle(url, request) {
   const id = Number(url.split('/').filter(segment => segment)[1]);
