@@ -166,12 +166,13 @@ function createArticle(url, request) {
 };
 
 function createComments(url,request){
-  const requestComments = request.body && request.body.comment;
+  const requestComments = request.body && request.body.comment; //the actual comment itself is request.body.comment
+  // or requestComments, which acts as shortcut to the comment
   const response = {};
   if(requestComments && requestComments.body && database.users[requestComments.username]
-    && database.articles[requestComments.articleId]){
+    && database.articles[requestComments.articleId]) {
       const comments = {
-        id: database.nextCommentsId++,
+        id: database.nextCommentId++,
         body: requestComments.body,
         url: requestComments.url,
         username: requestComments.username,
@@ -184,17 +185,35 @@ function createComments(url,request){
       database.users[comments.username].commentIds.push(comments.id);
       database.articles[comments.articleId].commentIds.push(comments.id);
 
-      response.body = {comments: comments};
+      response.body = {comment: comments};
       response.status = 201;
     }
     else {
       response.status = 400;
     }
+    return response;
 };
 
 function getComments(url,request){
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const comment = database.comments[id];
+  const response = {};
 
+  if (comment) {
+    database.comments = database.commentIds.map(
+      commentId => database.comments[commentID]);
+
+    response.body(comment: comments);
+    response.status = 200;
+  } else if (id) {
+    response.status = 404;
+  } else {
+    response.status = 400
+  }
+
+  return response;
 };
+
 
 function upvoteComments(url, request){
 
@@ -205,7 +224,26 @@ function downvoteComments(url, request){
 };
 
 function updateComments(url, request){
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const savedComments = database.comments[id];
+  const requestComments = request.body && request.body.comment;
+  const response ={};
 
+  if (!id || requestComments) {
+    response.status = 400;
+  }
+  else if (!savedComments) {
+    response.status = 404;
+  }
+  else {
+    savedComments.title =requestComments.title || savedComments.title;
+    savedComments.url = requestComments.url || savedComments.url;
+
+    response.body = {comment: comments}
+    response.status = 200;
+  }
+
+  return response;
 };
 
 function deleteComments(url, request){
