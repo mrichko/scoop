@@ -18,12 +18,10 @@ const routes = {
   },
 
   '/comments': {
-    'GET': getComments,
     'POST': createComments
   },
 
   '/comments/:id': {
-    'GET': getComments,
     'PUT': updateComments,
     'DELETE': deleteComments
 },
@@ -192,26 +190,6 @@ function createComments(url,request){
       response.status = 400;
     }
     return response;
-};
-
-function getComments(url,request){
-  const id = Number(url.split('/').filter(segment => segment)[1]);
-  const comment = database.comments[id];
-  const response = {};
-
-  if (comment) {
-    database.comments = database.commentIds.map(
-      commentId => database.comments[commentID]);
-
-    response.body(comment: comments);
-    response.status = 200;
-  } else if (id) {
-    response.status = 404;
-  } else {
-    response.status = 400
-  }
-
-  return response;
 };
 
 
