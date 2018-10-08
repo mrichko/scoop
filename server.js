@@ -264,7 +264,8 @@ function deleteComments(url, request){
 
   if (savedComment){
     database.comments[id] = null;
-
+    const userCommentIds = database.users[username].commentIds;
+    userCommentIds.splice(userCommentIds.indexOf(id), 1);
     response.status = 204;
   }
 
