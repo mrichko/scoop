@@ -16,6 +16,7 @@ const routes = {
   '/users/:username': {
     'GET': getUser
   },
+// created new routes to create and update comments, and allow upvoting/downvoting
 
   '/comments': {
     'POST': createComments
@@ -194,8 +195,25 @@ function createComments(url,request){
 
 
 function upvoteComments(url, request){
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const username = request.body && request.body.username;
+  const savedComment = database.comments[id];
+  const response = {};
+
+  if (savedComment && database.users[username]){
+    savedComment = upvote(savedComment, username);
+
+    response.body = {comment: savedComment};
+    response.status = 200;
+
+  } else {
+    response.status = 400;
+  }
+
+  return response;
 
 };
+
 
 function downvoteComments(url, request){
 
@@ -214,9 +232,8 @@ function updateComments(url, request){
     response.status = 404;
   }
   else {
-    savedComment.title = requestComments.title || savedComment.title;
-    savedComment.url = requestComments.url || savedComment.url;
-    response.body = {comment: requestComments}
+    database.comments[id].body = requestComments.body || savedComment.body;
+    response.body = {comment: savedComment}
     response.status = 200;
   }
 
@@ -224,8 +241,23 @@ function updateComments(url, request){
 };
 
 function deleteComments(url, request){
-};
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const savedComment = database.comments[id];
+  const response = {};
 
+  if (savedComment){
+    database.comments[id] = null;
+
+    response.status = 204;
+  }
+
+  else {
+   response.status = 404;
+  }
+
+  return response;
+
+};
 
 function updateArticle(url, request) {
   const id = Number(url.split('/').filter(segment => segment)[1]);
