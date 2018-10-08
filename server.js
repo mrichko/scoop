@@ -221,8 +221,12 @@ function downvoteComments(url, request){
   const savedComment = database.comments[id];
   const response = {};
 
-    response.status = 200;
+  if (savedComment && database.users[username]){
+    savedComment = downvote(savedComment, username);
 
+  response.body = {comment: savedComment};
+  response.status = 200;
+}
   else {
     response.status = 400;
   }
