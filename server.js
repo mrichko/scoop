@@ -210,13 +210,26 @@ function upvoteComments(url, request){
     response.status = 400;
   }
 
-  return response;
+    return response;
 
 };
 
 
 function downvoteComments(url, request){
+  const id = Number(url.split('/').filter(segment => segment)[1]);
+  const username = request.body && request.body.username;
+  const savedComment = database.comments[id];
+  const response = {};
 
+  if (savedComment && database.users[username]){
+    savedComment = downvote(savedComment, username);
+    response.status = 200;
+    
+  else {
+    response.status = 400;
+  }
+
+  return response;
 };
 
 function updateComments(url, request){
@@ -252,7 +265,7 @@ function deleteComments(url, request){
   }
 
   else {
-   response.status = 404;
+    response.status = 404;
   }
 
   return response;
