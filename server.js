@@ -216,8 +216,7 @@ function updateComments(url, request){
   else {
     savedComment.title = requestComments.title || savedComment.title;
     savedComment.url = requestComments.url || savedComment.url;
-
-    response.body = {comment: requestComments || savedComment}
+    response.body = {comment: requestComments}
     response.status = 200;
   }
 
@@ -225,8 +224,8 @@ function updateComments(url, request){
 };
 
 function deleteComments(url, request){
-
 };
+
 
 function updateArticle(url, request) {
   const id = Number(url.split('/').filter(segment => segment)[1]);
