@@ -221,16 +221,16 @@ function downvoteComments(url, request){
   const savedComment = database.comments[id];
   const response = {};
 
-  if (savedComment && database.users[username]){
-    savedComment = downvote(savedComment, username);
     response.status = 200;
-    
+
   else {
     response.status = 400;
   }
 
   return response;
 };
+
+
 
 function updateComments(url, request){
   const id = Number(url.split('/').filter(segment => segment)[1]);
