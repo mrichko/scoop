@@ -16,7 +16,7 @@ const routes = {
   '/users/:username': {
     'GET': getUser
   },
-// created new routes to create and update comments, and allow upvoting/downvoting
+// created new routes to create (POST), update (PUT), upvote/downvote (PUT), and delete (DELETE) comments
 
   '/comments': {
     'POST': createComments
@@ -168,6 +168,7 @@ function createComments(url,request){
   const requestComments = request.body && request.body.comment; //the actual comment itself is request.body.comment
   // or requestComments, which acts as shortcut to the comment
   const response = {};
+  //checking to see if we have everything we need before creating a comment (i.e comment, user's username, article)
   if(requestComments && requestComments.body && database.users[requestComments.username]
     && database.articles[requestComments.articleId]) {
       const comments = {
@@ -197,7 +198,7 @@ function createComments(url,request){
 
 function updateComments(url, request){
   const id = Number(url.split('/').filter(segment => segment)[1]);
-  const savedComment = database.comments[id];
+  const savedComment = database.comments[id]; 
   const requestComments = request.body && request.body.comment;
   const response ={};
 
@@ -265,8 +266,8 @@ function downvoteComments(url, request){
   let savedComment = database.comments[id];
   const response = {};
 
-  if (savedComment && database.users[username]){
-    savedComment = downvote(savedComment, username);
+  if (savedComment && database.users[username]){ // if we have an existing savedComment and an existing user
+    savedComment = downvote(savedComment, username); // downvote the savedComment and assign it to the user we identified
 
   response.body = {comment: savedComment};
   response.status = 200;
@@ -277,7 +278,6 @@ function downvoteComments(url, request){
 
   return response;
 };
-
 
 
 
